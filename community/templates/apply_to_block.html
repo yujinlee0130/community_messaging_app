@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Apply to Block</title>
+</head>
+<body>
+    <h1>Apply to Join Block {{ bid }}</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Apply</button>
+    </form>
+
+    <a href="{% url 'home' %}">Back to Home</a>
+</body>
+</html>

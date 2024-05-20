@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Reply to Thread</title>
+</head>
+<body>
+    <h1>Reply to Thread: {{ thread.subject }}</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Post Reply</button>
+    </form>
+
+    <a href="{% url 'thread_detail' thread.id %}">Back to Thread</a>
+</body>
+</html>

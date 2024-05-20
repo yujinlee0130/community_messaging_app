@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+</head>
+<body>
+    <h1>Welcome to the Community Platform</h1>
+
+    {% if user.is_authenticated %}
+        <div>
+            <p>Hello, {{ user.first_name }}!</p>
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit">Logout</button>
+            </form>
+        </div>
+
+        <div>
+            <a href="{% url 'edit_profile' user.profile.pk %}">
+                <button>Edit Profile</button>
+            </a>
+        </div>
+
+        <div>
+            <h2>Main Feed</h2>
+            <select id="feedFilter" onchange="filterThreads()">
+                <option value="all">All Threads</option>
+                <option value="unread" {% if show_unread %}selected{% endif %}>Unread Threads</option>
+            </select>
+            
+            <div id="allThreads" style="display: {% if show_unread %}none{% else %}block{% endif %};">
+                {% for visibility, threads in recent_threads.items %}
+                    <h3> &#128516; {{ visibility.capitalize }} Threads</h3>
+                    <ul>
+                        {% for thread in threads %}
+                            <li><a href="{% url 'thread_detail' thread.0 %}">{{ thread.1 }}</a> by {{ thread.2 }} {{ thread.3 }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endfor %}
+            </div>
+
+            <div id="unreadThreads" style="display: {% if show_unread %}block{% else %}none{% endif %};">
+                <h3>Unread Threads</h3>
+                <ul>
+                    {% for thread in unread_threads %}
+                        <li><a href="{% url 'thread_detail' thread.0 %}">{{ thread.1 }}</a> by {{ thread.2 }} {{ thread.3 }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+
+        <div>
+            <a href="{% url 'start_thread' %}">
+                <button>Start a New Thread</button>
+            </a>
+        </div>
+
+        <div>
+            <h2>New Members</h2>
+            <ul>
+                {% for profile in new_profiles %}
+                    <li>{{ profile.1 }} {{ profile.2 }} - {{ profile.3 }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div>
+            <h2>Pending Membership Applications</h2>
+            <ul>
+                {% for app in pending_applications %}
+                    <li>
+                        User {{ app.3 }} {{ app.4 }} wants to join Block {{ app.5 }}
+                        <form method="post" action="{% url 'approve_application' app.0 %}">
+                            {% csrf_token %}
+                            <button type="submit">Approve</button>
+                        </form>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div>
+            <h2>Apply to Join a Block</h2>
+            <form method="post" action="{% url 'apply_to_block' %}">
+                {% csrf_token %}
+                <select name="block_id">
+                    {% for block in all_blocks %}
+                        <option value="{{ block.0 }}">{{ block.1 }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit">Apply</button>
+            </form>
+        </div>
+ 
+        <div>
+            <h2>Search Messages</h2>
+            <form method="get" action="{% url 'home' %}">
+                <input type="text" name="keyword" placeholder="Enter keyword">
+                <button type="submit">Search</button>
+            </form>
+            <form method="get" action="{% url 'home' %}">
+                <input type="number" name="latitude" step="any" placeholder="Enter latitude">
+                <input type="number" name="longitude" step="any" placeholder="Enter longitude">
+                <select name="radius">
+                    <option value="100">100ft</option>
+                    <option value="200">200ft</option>
+                    <option value="300">300ft</option>
+                </select>
+                <button type="submit">Search</button>
+            </form>
+        </div>
+
+
+        <div>
+            <h2>Search Results</h2>
+            <div style="height: 200px; overflow-y: scroll;">
+                <ul>
+                    {% for message in search_results %}
+                        <li>
+                            {{ message.1 }} - {{ message.2 }} ({{ message.3 }})
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <div>
+            <h2>Followed Block Threads</h2>
+            <form method="get" action="{% url 'home' %}">
+                <select name="followed_block" id="followedBlockSelect">
+                    {% for block in followed_blocks %}
+                        <option value="{{ block.0 }}">{{ block.1 }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit">Search</button>
+            </form>
+
+            <div id="followedBlockThreads">
+                <h3>Threads in Followed Block</h3>
+                <ul>
+                    {% for thread in followed_block_threads %}
+                        <li><a href="{% url 'thread_detail' thread.0 %}">{{ thread.1 }}</a> by {{ thread.2 }} {{ thread.3 }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+
+    {% else %}
+        <div>
+            <a href="{% url 'signup' %}">
+                <button>Register</button>
+            </a>
+            <a href="{% url 'login' %}">
+                <button>Login</button>
+            </a>
+        </div>
+        <div>
+            <p>Please log in to view and participate in threads.</p>
+        </div>
+    {% endif %}
+
+    <script>
+        function filterThreads() {
+            const filter = document.getElementById('feedFilter').value;
+            if (filter === 'unread') {
+                window.location.href = "{% url 'home' %}?unread=true";
+            } else {
+                window.location.href = "{% url 'home' %}";
+            }
+        }
+    </script>
+</body>
+</html>

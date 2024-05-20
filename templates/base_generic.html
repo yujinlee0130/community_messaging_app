@@ -1,0 +1,23 @@
+<!-- templates/base_generic.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}Community Chat Platform{% endblock %}</title>
+</head>
+<body>
+    <header>
+        <h1>Community Chat Platform</h1>
+    </header>
+    <nav>
+        <!-- Add navigation links here -->
+    </nav>
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+    <footer>
+        <p>&copy; 2024 My Community Chat Platform</p>
+    </footer>
+</body>
+</html>

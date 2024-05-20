@@ -1,0 +1,14 @@
+<!-- community/templates/community/edit_profile.html -->
+
+{% extends "base_generic.html" %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block content %}
+  <h2>Edit Profile</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save</button>
+  </form>
+{% endblock %}

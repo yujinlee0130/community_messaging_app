@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ thread.subject }}</title> <!-- Thread subject -->
+</head>
+<body>
+    <h1>{{ thread.subject }}</h1> <!-- Thread subject -->
+    <p>Started by {{ thread.creator }}</p> <!-- Thread creator's name -->
+
+    <h2>Messages</h2>
+    <ul>
+        {% for message in messages %}
+            <li>
+                <p><strong>{{ message.title }}</strong> by User {{ message.user_id }} on {{ message.timestamp }}</p> <!-- Message title, user ID, and timestamp -->
+                <p>{{ message.body }}</p> <!-- Message body -->
+                {% if message.latitude and message.longitude %}
+                    <p>Location: {{ message.latitude }}, {{ message.longitude }}</p> <!-- Message location if available -->
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+
+    <a href="{% url 'reply_message' thread.id %}">
+        <button>Reply to Thread</button>
+    </a>
+</body>
+</html>
